@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { dbService } from "../firebaseInstance";
 import Tweet from "../components/Tweet";
 
 function Home({ userInfo }: any) {
   const [tweet, setTweet] = useState("");
   const [tweets, setTweets] = useState<any[]>([]);
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await dbService.add(tweet, new Date(), userInfo.uid);
-    setTweet("");
-  };
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    setTweet(e.target.value);
-  };
+  const onSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      await dbService.add(tweet, new Date(), userInfo.uid);
+      setTweet("");
+    },
+    [tweet, userInfo, setTweet]
+  );
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      setTweet(e.target.value);
+    },
+    [setTweet]
+  );
 
   useEffect(() => {
     dbService.onSnapshot(setTweets);

@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { authService } from "../firebaseInstance";
 import { useHistory } from "react-router-dom";
 
 function Profile() {
   const history = useHistory();
-  const onLogout = () => {
+  const onLogout = useCallback(() => {
     authService.logout();
     history.push("/");
-  };
+  }, []);
+  
   return (
     <React.Fragment>
       <button onClick={onLogout}>Log out</button>

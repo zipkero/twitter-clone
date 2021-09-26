@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { dbService } from "firebaseInstance";
 
 interface ITweetProps {
@@ -10,20 +10,22 @@ interface ITweetProps {
 function Tweet(props: ITweetProps) {
   const [editing, setEditing] = useState(false);
   const [newTweet, setNewTweet] = useState(props.text);
-  const onClickDelete = async () => {
+
+  const onClickDelete = useCallback(async () => {
     if (confirm("삭제하시겠습니까?")) {
       await dbService.delete(props.id);
     }
-  };
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTweet(e.target.value);
-  };
+  }, []);
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewTweet(e.target.value);
+  }, []);
+
+  const onSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await dbService.update(props.id, newTweet);
     setEditing(false);
-  };
+  }, []);
 
   const toggleEditing = () => setEditing((prev) => !prev);
 
@@ -52,4 +54,4 @@ function Tweet(props: ITweetProps) {
   );
 }
 
-export default Tweet;
+export default React.memo(Tweet);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { authService } from "../firebaseInstance";
 
 function Auth() {
@@ -7,36 +7,48 @@ function Auth() {
   const [newAccount, setNewAccount] = useState(true);
   const [error, setError] = useState("");
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    switch (e.target.name) {
-      case "email":
-        setEmail(e.target.value);
-        break;
-      case "password":
-        setPassword(e.target.value);
-        break;
-    }
-  };
-
-  const toggleAccount = () => setNewAccount((prev) => !prev);
-  const onSocialClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const data = await authService.signInWithPopup(e.currentTarget.name);
-  };
-
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      let data;
-      if (newAccount) {
-        data = await authService.createUser(email, password);
-      } else {
-        data = await authService.signIn(email, password);
+  const onChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      switch (e.target.name) {
+        case "email":
+          setEmail(e.target.value);
+          break;
+        case "password":
+          setPassword(e.target.value);
+          break;
       }
-      console.log(data);
-    } catch (err) {
-      setError((err as Error).message);
-    }
-  };
+    },
+    [setEmail, setPassword]
+  );
+
+  const toggleAccount = useCallback(
+    () => setNewAccount((prev) => !prev),
+    [setNewAccount]
+  );
+  const onSocialClick = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      await authService.signInWithPopup(e.currentTarget.name);
+    },
+    []
+  );
+
+  const onSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      try {
+        let data;
+        if (newAccount) {
+          data = await authService.createUser(email, password);
+        } else {
+          data = await authService.signIn(email, password);
+        }
+        console.log(data);
+      } catch (err) {
+        setError((err as Error).message);
+      }
+    },
+    [email, password]
+  );
 
   return (
     <div>
