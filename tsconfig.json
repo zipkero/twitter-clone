@@ -3,6 +3,7 @@
     "strict": true,
     "module": "CommonJS",
     "target": "es5",
+    "baseUrl": "src",
     "jsx": "react",
     "esModuleInterop": true,
     //"allowSyntheticDefaultImports": true,

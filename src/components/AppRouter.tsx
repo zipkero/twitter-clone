@@ -1,17 +1,29 @@
-import React, { useState } from "react";
+import React from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
-import Auth from "../routes/Auth";
-import Home from "../routes/Home";
+import Auth from "routes/Auth";
+import Home from "routes/Home";
+import { UserInfo } from "firebaseInstance";
+import Navigation from "components/Navigation";
+import Profile from "./Profile";
 
-function AppRouter() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+interface IAppRouterProps {
+  userInfo: UserInfo | null;
+}
+
+function AppRouter(props: IAppRouterProps) {
   return (
     <HashRouter>
+      {props.userInfo && <Navigation />}
       <Switch>
-        {isLoggedIn ? (
-          <Route exact={true} path="/">
-            <Home />
-          </Route>
+        {props.userInfo ? (
+          <React.Fragment>
+            <Route exact={true} path="/">
+              <Home userInfo={props.userInfo} />
+            </Route>
+            <Route exact={true} path="/profile">
+              <Profile />
+            </Route>
+          </React.Fragment>
         ) : (
           <Route exact={true} path="/">
             <Auth />
