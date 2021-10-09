@@ -19,6 +19,14 @@ import {
   onSnapshot,
   updateDoc,
 } from "firebase/firestore";
+import {
+  getStorage,
+  ref,
+  StorageReference,
+  deleteObject,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 
 const firebaseOptions: FirebaseOptions = {
   apiKey: process.env.TWITTER_APIKEY,
@@ -60,13 +68,19 @@ export const authService = {
 export const firebaseStore = getFirestore(firebaseApp);
 
 export const dbService = {
-  add: async (text: string, createAt: Date, createId: string) => {
+  add: async (
+    text: string,
+    createAt: Date,
+    createId: string,
+    url: string | null
+  ) => {
     const newRef = doc(collection(firebaseStore, "tweets"));
 
     await setDoc(newRef, {
       text: text,
       createAt: createAt,
       createId: createId,
+      url: url,
     });
   },
   update: async (id: string, text: string) => {
@@ -97,5 +111,44 @@ export const dbService = {
         })
       );
     });
+  },
+};
+
+export const firebaseStorage = getStorage(
+  firebaseApp,
+  "twitter-clone-3118c.appspot.com"
+);
+
+export const storageService = {
+  ref: (path: string): StorageReference => {
+    return ref(firebaseStorage, path);
+  },
+  delete: async (path: string) => {
+    const deleteRef = ref(firebaseStorage, path);
+    try {
+      await deleteObject(deleteRef);
+    } catch (e) {
+      console.log(e);
+    }
+  },
+  upload: (ref: StorageReference, file: File, callback: Function) => {
+    const uploadTask = uploadBytesResumable(ref, file, {
+      contentType: "image/jpeg",
+    });
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        console.log(snapshot);
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+          callback(url);
+        });
+      }
+    );
   },
 };

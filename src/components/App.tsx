@@ -20,7 +20,6 @@ export default function App() {
   return (
     <React.Fragment>
       {init ? <AppRouter userInfo={loginUserInfo} /> : "..."}
-      <footer>&copy; {new Date().getFullYear()} Twitter Clone</footer>
     </React.Fragment>
   );
 }

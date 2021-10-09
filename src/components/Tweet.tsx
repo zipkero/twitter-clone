@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from "react";
-import { dbService } from "firebaseInstance";
+import { dbService, storageService } from "firebaseInstance";
 
 interface ITweetProps {
   id: string;
   text: string;
   isOwner: boolean;
+  url: string;
 }
 
 function Tweet(props: ITweetProps) {
@@ -14,6 +15,9 @@ function Tweet(props: ITweetProps) {
   const onClickDelete = useCallback(async () => {
     if (confirm("삭제하시겠습니까?")) {
       await dbService.delete(props.id);
+      if (props.url) {
+        await storageService.delete(props.url);
+      }
     }
   }, []);
 
@@ -42,6 +46,7 @@ function Tweet(props: ITweetProps) {
       ) : (
         <React.Fragment>
           <h4>{props.text}</h4>
+          {props.url && <img alt="" width="100" src={props.url} />}
           {props.isOwner && (
             <React.Fragment>
               <button onClick={onClickDelete}>Delete</button>
