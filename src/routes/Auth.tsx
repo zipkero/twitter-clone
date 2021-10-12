@@ -42,7 +42,6 @@ function Auth() {
         } else {
           data = await authService.signIn(email, password);
         }
-        console.log(data);
       } catch (err) {
         setError((err as Error).message);
       }

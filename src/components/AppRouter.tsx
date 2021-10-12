@@ -8,12 +8,13 @@ import Profile from "./Profile";
 
 interface IAppRouterProps {
   userInfo: UserInfo | null;
+  refreshUser: () => void;
 }
 
 function AppRouter(props: IAppRouterProps) {
   return (
     <HashRouter>
-      {props.userInfo && <Navigation />}
+      {props.userInfo && <Navigation userInfo={props.userInfo} />}
       <Switch>
         {props.userInfo ? (
           <React.Fragment>
@@ -21,7 +22,10 @@ function AppRouter(props: IAppRouterProps) {
               <Home userInfo={props.userInfo} />
             </Route>
             <Route exact={true} path="/profile">
-              <Profile />
+              <Profile
+                userInfo={props.userInfo}
+                refreshUser={props.refreshUser}
+              />
             </Route>
           </React.Fragment>
         ) : (

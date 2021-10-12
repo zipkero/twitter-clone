@@ -7,6 +7,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   AuthProvider,
+  updateProfile,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -18,6 +19,7 @@ import {
   getDocs,
   onSnapshot,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -63,6 +65,21 @@ export const authService = {
   logout: () => {
     firebaseAuth.signOut();
   },
+  getCurrentUser: (): User | null => {
+    return firebaseAuth.currentUser;
+  },
+  updateProfile: async (newDisplayName: string) => {
+    if (!firebaseAuth?.currentUser) {
+      return;
+    }
+    try {
+      return await updateProfile(firebaseAuth.currentUser, {
+        displayName: newDisplayName,
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  },
 };
 
 export const firebaseStore = getFirestore(firebaseApp);
@@ -85,13 +102,21 @@ export const dbService = {
   },
   update: async (id: string, text: string) => {
     const ref = doc(firebaseStore, `tweets`, id);
-    console.log(ref);
     await updateDoc(ref, {
       text: text,
     });
   },
-  get: async (): Promise<any[]> => {
-    const q = query(collection(firebaseStore, "tweets"));
+  get: async (id: string): Promise<any[]> => {
+    let q;
+    if (id) {
+      q = query(
+        collection(firebaseStore, "tweets"),
+        where("createId", "==", id)
+      );
+    } else {
+      q = query(collection(firebaseStore, "tweets"));
+    }
+
     const querySnapshot = await getDocs(q);
     const result: any[] = [];
     querySnapshot.forEach((doc) => {

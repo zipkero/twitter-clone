@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AppRouter from "components/AppRouter";
-import { firebaseAuth, UserInfo } from "firebaseInstance";
-import { User } from "firebase/auth";
+import { authService, firebaseAuth, UserInfo } from "firebaseInstance";
 
 export default function App() {
   const [init, setInit] = useState(false);
@@ -17,9 +16,18 @@ export default function App() {
     });
   }, []);
 
+  const refreshUser = () => {
+    const userInfo: UserInfo = authService.getCurrentUser() as UserInfo;
+    setLoginUserInfo({ ...userInfo });
+  };
+
   return (
     <React.Fragment>
-      {init ? <AppRouter userInfo={loginUserInfo} /> : "..."}
+      {init ? (
+        <AppRouter userInfo={loginUserInfo} refreshUser={refreshUser} />
+      ) : (
+        "..."
+      )}
     </React.Fragment>
   );
 }
