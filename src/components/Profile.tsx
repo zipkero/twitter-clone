@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { authService, dbService } from "../firebaseInstance";
 import { useHistory } from "react-router-dom";
 
 function Profile({ userInfo, refreshUser }: any) {
   const [newDisplayName, setNewDisplayName] = useState(userInfo.displayName);
   const history = useHistory();
-  const onLogout = useCallback(() => {
-    authService.logout();
+  const onLogout = useCallback(async () => {
+    await authService.logout();
     history.push("/");
   }, []);
 
@@ -26,9 +26,6 @@ function Profile({ userInfo, refreshUser }: any) {
       refreshUser();
     }
   };
-
-  useEffect(() => {}, [getMyTweets()]);
-
   return (
     <React.Fragment>
       <form onSubmit={onSubmit}>

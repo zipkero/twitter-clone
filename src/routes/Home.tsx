@@ -7,7 +7,10 @@ function Home({ userInfo }: any) {
   const [tweets, setTweets] = useState<any[]>([]);
 
   useEffect(() => {
-    dbService.onSnapshot(setTweets);
+    const unsubscribe = dbService.onSnapshot(setTweets);
+    return () => {
+      unsubscribe && unsubscribe();
+    };
   }, []);
 
   return (

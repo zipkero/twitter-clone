@@ -62,8 +62,8 @@ export const authService = {
     const provider = getProvider(providerName);
     return await signInWithPopup(firebaseAuth, provider as AuthProvider);
   },
-  logout: () => {
-    firebaseAuth.signOut();
+  logout: async () => {
+    await firebaseAuth.signOut();
   },
   getCurrentUser: (): User | null => {
     return firebaseAuth.currentUser;
@@ -129,7 +129,7 @@ export const dbService = {
   },
   onSnapshot: (callback: Function) => {
     const q = query(collection(firebaseStore, "tweets"));
-    onSnapshot(q, (querySnapshot) => {
+    return onSnapshot(q, (querySnapshot) => {
       callback(
         querySnapshot.docs.map((doc) => {
           return { id: doc.id, ...doc.data() };
@@ -141,7 +141,7 @@ export const dbService = {
 
 export const firebaseStorage = getStorage(
   firebaseApp,
-  "twitter-clone-3118c.appspot.com"
+  firebaseOptions.storageBucket
 );
 
 export const storageService = {
