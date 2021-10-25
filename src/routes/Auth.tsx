@@ -1,8 +1,9 @@
-import React, {useCallback} from "react";
-import {authService} from "firebaseInstance";
+import React, { useCallback } from "react";
+import { authService } from "firebaseInstance";
 import AuthForm from "../components/AuthForm";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGoogle, faTwitter} from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle, faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { AuthBtn, AuthBtnsContainer, AuthContainer } from "styled";
 
 function Auth() {
     const onSocialClick = useCallback(
@@ -13,7 +14,7 @@ function Auth() {
     );
 
     return (
-        <div className="authContainer">
+        <AuthContainer>
             <FontAwesomeIcon
                 icon={faTwitter}
                 color={"#04AAFF"}
@@ -23,13 +24,16 @@ function Auth() {
                 }}
             />
 
-            <AuthForm/>
-            <div className="authBtns">
-                <button name="google" onClick={onSocialClick} className="authBtn">
-                    Continue with Google <FontAwesomeIcon icon={faGoogle}/>
-                </button>
-            </div>
-        </div>
+            <AuthForm />
+            <AuthBtnsContainer>
+                <AuthBtn
+                    name="google"
+                    onClick={onSocialClick}
+                >
+                    Continue with Google <FontAwesomeIcon icon={faGoogle} />
+                </AuthBtn>
+            </AuthBtnsContainer>
+        </AuthContainer>
     );
 }
 
