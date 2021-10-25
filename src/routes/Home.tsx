@@ -14,9 +14,13 @@ function Home({ userInfo }: any) {
   }, []);
 
   return (
-    <React.Fragment>
+    <div className="container">
       <TweetFactory userInfo={userInfo} />
-      <div>
+      <div
+        style={{
+          marginTop: 30,
+        }}
+      >
         {tweets.map((t) => (
           <Tweet
             key={t.id}
@@ -27,7 +31,7 @@ function Home({ userInfo }: any) {
           />
         ))}
       </div>
-    </React.Fragment>
+    </div>
   );
 }
 

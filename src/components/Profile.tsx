@@ -1,19 +1,16 @@
 import React, { useCallback, useState } from "react";
-import { authService, dbService } from "../firebaseInstance";
+import { authService } from "../firebaseInstance";
 import { useHistory } from "react-router-dom";
 
 function Profile({ userInfo, refreshUser }: any) {
-  const [newDisplayName, setNewDisplayName] = useState(userInfo.displayName);
+  const [newDisplayName, setNewDisplayName] = useState(
+    userInfo.displayName || ""
+  );
   const history = useHistory();
   const onLogout = useCallback(async () => {
     await authService.logout();
     history.push("/");
   }, []);
-
-  const getMyTweets = async () => {
-    const tweets = await dbService.get(userInfo.uid);
-    console.log(tweets);
-  };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewDisplayName(e.target.value);
@@ -27,18 +24,29 @@ function Profile({ userInfo, refreshUser }: any) {
     }
   };
   return (
-    <React.Fragment>
-      <form onSubmit={onSubmit}>
+    <div className="container">
+      <form onSubmit={onSubmit} className="profileForm">
         <input
           type="text"
           onChange={onChange}
           value={newDisplayName}
           placeholder="Display Name"
+          autoFocus
+          className="formInput"
         />
-        <input type="submit" placeholder="Update Profile" />
+        <input
+          type="submit"
+          placeholder="Update Profile"
+          className="formBtn"
+          style={{
+            marginTop: 10,
+          }}
+        />
       </form>
-      <button onClick={onLogout}>Log out</button>
-    </React.Fragment>
+      <span onClick={onLogout} className="formBtn cancelBtn logOut">
+        Log out
+      </span>
+    </div>
   );
 }
 

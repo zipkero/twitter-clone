@@ -43,7 +43,7 @@ function AuthForm() {
   );
   return (
     <React.Fragment>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className="container">
         <input
           type="email"
           name="email"
@@ -51,6 +51,7 @@ function AuthForm() {
           value={email}
           onChange={onChange}
           required
+          className="authInput"
         />
         <input
           type="password"
@@ -59,11 +60,18 @@ function AuthForm() {
           value={password}
           onChange={onChange}
           required
+          className="authInput"
         />
-        <input type="submit" value={newAccount ? "Create Account" : "Log in"} />
-        {error}
+        <input
+          type="submit"
+          className="authInput authSubmit"
+          value={newAccount ? "Create Account" : "Log in"}
+        />
+        {error && <span className="authError">{error}</span>}
       </form>
-      <span onClick={toggleAccount}>{newAccount ? "sign in" : "sign up"}</span>
+      <span onClick={toggleAccount} className="authSwitch">
+        {newAccount ? "sign in" : "sign up"}
+      </span>
     </React.Fragment>
   );
 }

@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { dbService, storageService } from "firebaseInstance";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPencilAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 interface ITweetProps {
   id: string;
@@ -34,24 +36,37 @@ function Tweet(props: ITweetProps) {
   const toggleEditing = () => setEditing((prev) => !prev);
 
   return (
-    <div>
+    <div className="nweet">
       {editing ? (
         <React.Fragment>
-          <form onSubmit={onSubmit}>
-            <input value={newTweet} onChange={onChange} required />
-            <input type="submit" value="update" />
+          <form onSubmit={onSubmit} className="container nweetEdit">
+            <input
+              value={newTweet}
+              onChange={onChange}
+              required
+              placeholder="edit you tweet"
+              autoFocus
+              className="formInput"
+            />
+            <input type="submit" value="update" className="formBtn" />
           </form>
-          <button onClick={toggleEditing}>Cancel</button>
+          <button onClick={toggleEditing} className="formBtn cancelBtn">
+            Cancel
+          </button>
         </React.Fragment>
       ) : (
         <React.Fragment>
           <h4>{props.text}</h4>
-          {props.url && <img alt="" width="100" src={props.url} />}
+          {props.url && <img alt="" width="50" src={props.url} />}
           {props.isOwner && (
-            <React.Fragment>
-              <button onClick={onClickDelete}>Delete</button>
-              <button onClick={toggleEditing}>Edit</button>
-            </React.Fragment>
+            <div className="nweet__actions">
+              <span onClick={onClickDelete}>
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+              <span onClick={toggleEditing}>
+                <FontAwesomeIcon icon={faPencilAlt} />
+              </span>
+            </div>
           )}
         </React.Fragment>
       )}
