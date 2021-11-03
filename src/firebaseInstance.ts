@@ -60,7 +60,12 @@ export const authService = {
         );
     },
     signIn: async (email: string, password: string) => {
-        return await signInWithEmailAndPassword(firebaseAuth, email, password);
+        const userCredential = await signInWithEmailAndPassword(
+            firebaseAuth,
+            email,
+            password
+        );
+        return userCredential?.user;
     },
     signInWithPopup: async (providerName: string) => {
         const provider = getProvider(providerName);

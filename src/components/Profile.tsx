@@ -1,9 +1,22 @@
 import React, { useCallback, useState } from "react";
-import { authService } from "../firebaseInstance";
+import { authService, UserInfo } from "../firebaseInstance";
 import { useHistory } from "react-router-dom";
-import {Container, FormBtn, FormInput, ProfileForm, ProfileLogout} from "styled";
+import {
+    Container,
+    FormBtn,
+    FormInput,
+    ProfileForm,
+    ProfileLogout,
+} from "styled";
+import { useDispatch } from "react-redux";
+import { userActionCreator } from "store/user";
 
-function Profile({ userInfo, refreshUser }: any) {
+interface Props {
+    userInfo: UserInfo;
+}
+
+const Profile: React.FC<Props> = ({ userInfo }) => {
+    const dispatch = useDispatch();
     const [newDisplayName, setNewDisplayName] = useState(
         userInfo.displayName || ""
     );
@@ -21,7 +34,7 @@ function Profile({ userInfo, refreshUser }: any) {
         e.preventDefault();
         if (userInfo.displayName != newDisplayName) {
             await authService.updateProfile(newDisplayName);
-            refreshUser();
+            dispatch(userActionCreator.refreshUser());
         }
     };
     return (
@@ -42,11 +55,9 @@ function Profile({ userInfo, refreshUser }: any) {
                     }}
                 />
             </ProfileForm>
-            <ProfileLogout onClick={onLogout}>
-                Log out
-            </ProfileLogout>
+            <ProfileLogout onClick={onLogout}>Log out</ProfileLogout>
         </Container>
     );
-}
+};
 
 export default Profile;
