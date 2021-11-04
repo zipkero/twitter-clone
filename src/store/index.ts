@@ -1,19 +1,22 @@
 import { applyMiddleware, combineReducers, createStore } from "redux";
-import userReducer from "store/user";
+import userReducer, { UserState } from "store/user";
 import createSagaMiddleware from "redux-saga";
 import { rootSaga } from "sagas";
+import { DefaultRootState } from "react-redux";
 
 const sagaMiddleware = createSagaMiddleware();
 
-export type rootState = {
-    user: typeof userReducer;
-};
+interface DefaultTwitterState {
+    user: UserState;
+}
 
-const defaultRootState: rootState = {
+declare module "react-redux" {
+    interface DefaultRootState extends DefaultTwitterState {}
+}
+
+const rootReducer = combineReducers({
     user: userReducer,
-};
-
-const rootReducer = combineReducers(defaultRootState);
+});
 
 const middlewares = [sagaMiddleware];
 

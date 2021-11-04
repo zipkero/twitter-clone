@@ -5,18 +5,18 @@ import Home from "routes/Home";
 import { firebaseAuth, UserInfo } from "firebaseInstance";
 import Navigation from "components/Navigation";
 import Profile from "./Profile";
-import { useSelector } from "react-redux";
-import { rootState } from "store";
-import { UserState } from "store/user";
+import { useDispatch, useSelector } from "react-redux";
+import { userActionCreator } from "store/user";
 
 interface IAppRouterProps {
     userInfo: UserInfo | undefined;
 }
 
 function AppRoute(props: IAppRouterProps) {
+    const dispatch = useDispatch();
     useEffect(() => {
         firebaseAuth.onAuthStateChanged((user) => {
-            //setInit(true);
+            dispatch(userActionCreator.authStateChanged(user));
         });
     }, []);
 
@@ -24,10 +24,10 @@ function AppRoute(props: IAppRouterProps) {
         return (
             <React.Fragment>
                 <Route exact={true} path="/">
-                    <Home userInfo={props.userInfo} />
+                    <Home />
                 </Route>
                 <Route exact={true} path="/profile">
-                    <Profile userInfo={props.userInfo} />
+                    <Profile />
                 </Route>
             </React.Fragment>
         );
@@ -42,7 +42,7 @@ function AppRoute(props: IAppRouterProps) {
 }
 
 function AppRouter() {
-    const state = useSelector<rootState>((state) => state?.user) as UserState;
+    const state = useSelector((state) => state.user);
 
     return (
         <HashRouter>

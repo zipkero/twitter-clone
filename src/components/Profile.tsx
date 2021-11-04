@@ -8,17 +8,14 @@ import {
     ProfileForm,
     ProfileLogout,
 } from "styled";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userActionCreator } from "store/user";
 
-interface Props {
-    userInfo: UserInfo;
-}
-
-const Profile: React.FC<Props> = ({ userInfo }) => {
+const Profile = () => {
+    const state = useSelector((state) => state?.user);
     const dispatch = useDispatch();
     const [newDisplayName, setNewDisplayName] = useState(
-        userInfo.displayName || ""
+        state.user_info?.displayName || ""
     );
     const history = useHistory();
     const onLogout = useCallback(async () => {
@@ -32,7 +29,7 @@ const Profile: React.FC<Props> = ({ userInfo }) => {
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (userInfo.displayName != newDisplayName) {
+        if (state.user_info?.displayName != newDisplayName) {
             await authService.updateProfile(newDisplayName);
             dispatch(userActionCreator.refreshUser());
         }

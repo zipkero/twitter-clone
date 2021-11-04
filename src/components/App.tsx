@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import AppRouter from "components/AppRouter";
-import { firebaseAuth } from "firebaseInstance";
-import { Provider, useDispatch, useSelector } from "react-redux";
-import store, { rootState } from "store";
-import { UserState } from "store/user";
+import { Provider } from "react-redux";
+import store from "store";
 
 export default function App() {
     return (

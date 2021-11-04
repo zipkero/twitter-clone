@@ -1,6 +1,12 @@
 import { User } from "firebase/auth";
 import { UserInfo } from "firebaseInstance";
 
+export type UserState = {
+    is_login: boolean;
+    user_info?: UserInfo;
+    error?: string;
+};
+
 interface IAction<T, P> {
     type: T;
     payload?: P;
@@ -11,6 +17,8 @@ export const userActionType = {
     createUser: "createUser",
 
     refreshUser: "refreshUser",
+
+    authStateChanged: "authStateChanged",
 
     updateUserInfo_Success: "updateUserInfo_Success",
     updateUserInfo_Failure: "updateUserInfo_Failure",
@@ -23,6 +31,13 @@ export type authenticateUserType = IAction<
     {
         email: string;
         password: string;
+    }
+>;
+
+export type authStateChangedType = IAction<
+    typeof userActionType.authStateChanged,
+    {
+        user_info?: User;
     }
 >;
 
@@ -44,40 +59,35 @@ type updateUserInfo_Failure_Type = IAction<
 
 type UserActionReturnType =
     | refreshUserType
+    | authStateChangedType
     | authenticateUserType
     | updateUserInfo_Success_Type
     | updateUserInfo_Failure_Type;
 
 export const userActionCreator = {
-    signInUser: (
-        email: string,
-        password: string
-    ): UserActionReturnType => ({
+    signInUser: (email: string, password: string): UserActionReturnType => ({
         type: userActionType.signInUser,
         payload: {
             email,
             password,
         },
     }),
-    createUser: (
-        email: string,
-        password: string
-    ): UserActionReturnType => ({
+    createUser: (email: string, password: string): UserActionReturnType => ({
         type: userActionType.signInUser,
         payload: {
             email,
             password,
+        },
+    }),
+    authStateChanged: (user_info: User | null): UserActionReturnType => ({
+        type: userActionType.authStateChanged,
+        payload: {
+            user_info: user_info || undefined,
         },
     }),
     refreshUser: (): UserActionReturnType => ({
         type: userActionType.refreshUser,
     }),
-};
-
-export type UserState = {
-    is_login: boolean;
-    user_info?: UserInfo;
-    error?: string;
 };
 
 const initialState: UserState = {
@@ -101,6 +111,11 @@ export default function userReducer(
         case userActionType.updateUserInfo_Success:
             return {
                 is_login: true,
+                user_info: action.payload?.user_info,
+            };
+        case userActionType.authStateChanged:
+            return {
+                ...state,
                 user_info: action.payload?.user_info,
             };
     }
