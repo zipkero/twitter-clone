@@ -2,11 +2,12 @@ import { applyMiddleware, combineReducers, createStore } from "redux";
 import userReducer, { UserState } from "store/user";
 import createSagaMiddleware from "redux-saga";
 import { rootSaga } from "sagas";
-import { DefaultRootState } from "react-redux";
+import { TweetState } from "./tweet";
 
 const sagaMiddleware = createSagaMiddleware();
 
 interface DefaultTwitterState {
+    tweet: TweetState;
     user: UserState;
 }
 

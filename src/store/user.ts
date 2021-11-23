@@ -1,16 +1,12 @@
 import { User } from "firebase/auth";
 import { UserInfo } from "firebaseInstance";
+import { IAction } from "store/common";
 
 export type UserState = {
     is_login: boolean;
     user_info?: UserInfo;
     error?: string;
 };
-
-interface IAction<T, P> {
-    type: T;
-    payload?: P;
-}
 
 export const userActionType = {
     signInUser: "signInUser",

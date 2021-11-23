@@ -115,7 +115,7 @@ export const dbService = {
             text: text,
         });
     },
-    get: async (id: string): Promise<any[]> => {
+    set: async (id: string): Promise<any[]> => {
         let q;
         if (id) {
             q = query(

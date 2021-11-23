@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { dbService } from "../firebaseInstance";
+import React, { useEffect } from "react";
+import { dbService, UserInfo } from "../firebaseInstance";
 import Tweet from "../components/Tweet";
 import TweetFactory from "../components/TweetFactory";
 import { Container } from "styled";
 import { useSelector } from "react-redux";
-import { User } from "firebase/auth";
+import { ITweetItem } from "store/common";
+import { tweetActionCreator } from "store/tweet";
 
 function Home() {
-    const state = useSelector((state) => state?.user);
-    const userInfo = state.user_info as User;
-    const [tweets, setTweets] = useState<any[]>([]);
+    const state = useSelector((state) => state);
+    const [user, tweet] = [state.user, state.tweet];
+
+    const userInfo = user.user_info;
 
     useEffect(() => {
-        const unsubscribe = dbService.onSnapshot(setTweets);
+        const unsubscribe = dbService.onSnapshot((items: ITweetItem[]) => {
+            tweetActionCreator.getList(items);
+        });
         return () => {
             unsubscribe && unsubscribe();
         };
@@ -26,13 +30,13 @@ function Home() {
                     marginTop: 30,
                 }}
             >
-                {tweets.map((t) => (
+                {tweet.items.map((t) => (
                     <Tweet
                         key={t.id}
                         id={t.id}
                         text={t.text}
                         url={t.url}
-                        isOwner={t.createId === userInfo.uid}
+                        isOwner={t.createId === userInfo?.uid}
                     />
                 ))}
             </div>
